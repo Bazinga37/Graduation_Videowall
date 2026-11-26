@@ -1,63 +1,214 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="hr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Promocija FER – Pojavi se na zidu</title>
-<style>
-  :root { --bg: #f5f6fa; --fg: #111; --accent: #e30613; --ok: #1a7f37; --err: #c62828; --font: system-ui, sans-serif; }
-  * { box-sizing: border-box; }
-  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); color: var(--fg); font-family: var(--font); padding: 24px; }
-  .card { width: 100%; max-width: 380px; background: #fff; border-radius: 16px; padding: 28px; box-shadow: 0 6px 24px rgba(0,0,0,.08); }
-  .card__title { margin: 0 0 8px; font-size: 22px; }
-  .card__text { margin: 0 0 20px; color: #555; }
-  .form__input { width: 100%; font-size: 24px; letter-spacing: 3px; text-align: center; padding: 14px; border: 2px solid #ddd; border-radius: 10px; }
-  .form__input:focus { outline: none; border-color: var(--accent); }
-  .form__btn { width: 100%; margin-top: 14px; padding: 14px; font-size: 18px; font-weight: 600; border: 0; border-radius: 10px; background: var(--accent); color: #fff; }
-  .form__btn:disabled { opacity: .5; }
-  .msg { margin-top: 16px; min-height: 1.4em; text-align: center; }
-  .msg--ok { color: var(--ok); } .msg--err { color: var(--err); }
-</style>
-</head>
-<body>
-  <main class="card">
-    <h1 class="card__title">Čestitamo! 🎓</h1>
-    <p class="card__text">Upiši svoj JMBAG i pogledaj videozid.</p>
-    <form id="form">
-      <input id="jmbag" class="form__input" inputmode="numeric" pattern="\d{10}" maxlength="10"
-             placeholder="0036xxxxxx" autocomplete="off" required>
-      <button id="btn" class="form__btn" type="submit">Prikaži me</button>
-    </form>
-    <p id="msg" class="msg"></p>
-  </main>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#071a33" />
+    <title>Promocija FER</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --fer-blue: #0b4f9c;
+        --fer-navy: #071a33;
+        --fer-yellow: #f6b800;
+        --bg: #f4f5f7;
+        --ink: #0d1726;
+        --muted: #5b6676;
+        --line: #d6dbe3;
+        --err: #c62828;
+        --font: "Archivo", system-ui, sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      body {
+        min-height: 100svh;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font);
+      }
 
-<script>
-  const form = document.getElementById('form'), input = document.getElementById('jmbag');
-  const btn = document.getElementById('btn'), msg = document.getElementById('msg');
+      .top {
+        background: var(--fer-navy);
+        color: #fff;
+        padding: 20px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .wordmark {
+        font-weight: 800;
+        font-size: 24px;
+        letter-spacing: -0.02em;
+      }
+      .wordmark span {
+        color: var(--fer-yellow);
+      }
+      .top__label {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #9fb0c8;
+      }
 
-  input.addEventListener('input', () => { input.value = input.value.replace(/\D/g, '').slice(0, 10); });
+      main {
+        flex: 1;
+        width: 100%;
+        max-width: 420px;
+        margin: 0 auto;
+        padding: 48px 24px;
+      }
+      .title {
+        font-size: 32px;
+        line-height: 1.05;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      .bar {
+        width: 40px;
+        height: 4px;
+        background: var(--fer-yellow);
+        margin: 18px 0 32px;
+      }
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    btn.disabled = true; msg.className = 'msg'; msg.textContent = 'Šaljem...';
-    try {
-      const r = await fetch('/api/submit', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jmbag: input.value }),
+      .label {
+        display: block;
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      .input {
+        width: 100%;
+        font: 600 26px/1 var(--font);
+        letter-spacing: 0.14em;
+        font-variant-numeric: tabular-nums;
+        padding: 16px 14px;
+        border: 0;
+        border-bottom: 2px solid var(--line);
+        background: transparent;
+        color: var(--ink);
+        border-radius: 0;
+      }
+      .input::placeholder {
+        color: #b3bbc7;
+      }
+      .input:focus {
+        outline: none;
+        border-bottom-color: var(--fer-blue);
+      }
+      .btn {
+        width: 100%;
+        margin-top: 28px;
+        padding: 18px;
+        font: 700 16px var(--font);
+        letter-spacing: 0.04em;
+        border: 0;
+        border-radius: 0;
+        background: var(--fer-blue);
+        color: #fff;
+        cursor: pointer;
+      }
+      .btn:active {
+        background: var(--fer-navy);
+      }
+      .btn:disabled {
+        opacity: 0.5;
+      }
+
+      .msg {
+        margin-top: 20px;
+        min-height: 1.4em;
+        font-size: 15px;
+      }
+      .msg--ok {
+        color: var(--fer-blue);
+        font-weight: 600;
+      }
+      .msg--err {
+        color: var(--err);
+      }
+
+      footer {
+        padding: 20px 24px;
+        font-size: 12px;
+        color: var(--muted);
+        border-top: 1px solid var(--line);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top">
+      <div class="wordmark">FER<span>.</span></div>
+      <div class="top__label">Promocija prvostupnika</div>
+    </header>
+
+    <main>
+      <h1 class="title">Upiši svoj JMBAG</h1>
+      <div class="bar"></div>
+      <form id="form">
+        <label class="label" for="jmbag">JMBAG</label>
+        <input
+          id="jmbag"
+          class="input"
+          inputmode="numeric"
+          pattern="\d{10}"
+          maxlength="10"
+          placeholder="0036000000"
+          autocomplete="off"
+          required
+        />
+        <button id="btn" class="btn" type="submit">Pošalji</button>
+      </form>
+      <p id="msg" class="msg" role="status"></p>
+    </main>
+
+    <footer>
+      Fakultet elektrotehnike i računarstva · Sveučilište u Zagrebu
+    </footer>
+
+    <script>
+      const form = document.getElementById("form"),
+        input = document.getElementById("jmbag");
+      const btn = document.getElementById("btn"),
+        msg = document.getElementById("msg");
+
+      input.addEventListener("input", () => {
+        input.value = input.value.replace(/\D/g, "").slice(0, 10);
       });
-      const data = await r.json();
-      if (!r.ok) throw new Error(data.message || 'Greška');
-      msg.className = 'msg msg--ok';
-      msg.textContent = data.position === 0
-        ? `${data.ime}, pogledaj zid – sad si ti na redu!`
-        : `${data.ime}, u redu si (${data.position}. po redu). Prati zid!`;
-      input.value = '';
-    } catch (err) {
-      msg.className = 'msg msg--err'; msg.textContent = err.message;
-    } finally {
-      btn.disabled = false;
-    }
-  });
-</script>
-</body>
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        btn.disabled = true;
+        msg.className = "msg";
+        msg.textContent = "";
+        try {
+          const r = await fetch("/api/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ jmbag: input.value }),
+          });
+          const data = await r.json();
+          if (!r.ok) throw new Error(data.message || "Greška");
+          msg.className = "msg msg--ok";
+          msg.textContent = "Poslano.";
+          input.value = "";
+        } catch (err) {
+          msg.className = "msg msg--err";
+          msg.textContent = err.message;
+        } finally {
+          btn.disabled = false;
+        }
+      });
+    </script>
+  </body>
 </html>

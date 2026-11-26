@@ -4,14 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Videozid – Promocija FER</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      /* === Dizajner: mijenjaj varijable i klase, JS ovisi samo o id-evima === */
+      /* === FER paleta: plava = računarstvo, žuta = elektrotehnika, uz neutralne ===
+     Točne vrijednosti uzeti iz službenog logotipa (fer.unizg.hr → Vizualni identitet). */
       :root {
-        --bg: #0b1020;
-        --fg: #ffffff;
-        --accent: #e30613;
-        --muted: #a8b0c4;
-        --font: system-ui, sans-serif;
+        --fer-blue: #0b4f9c;
+        --fer-navy: #071a33;
+        --fer-yellow: #f6b800;
+        --ink: #ffffff;
+        --muted: #9fb0c8;
+        --line: rgba(255, 255, 255, 0.14);
+        --font: "Archivo", system-ui, sans-serif;
+        --display-s: 15s; /* mora odgovarati DISPLAY_MS na serveru */
       }
       * {
         box-sizing: border-box;
@@ -20,80 +30,245 @@
       html,
       body {
         height: 100%;
-        background: var(--bg);
-        color: var(--fg);
+        background: var(--fer-navy);
+        color: var(--ink);
         font-family: var(--font);
         overflow: hidden;
       }
-      .screen {
+
+      .frame {
         position: absolute;
         inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 3vh;
-        transition: opacity 0.6s;
+        padding: 6vh 6vw;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
       }
-      .hidden {
+      .frame__top {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 2.4vh;
+      }
+      .wordmark {
+        font-weight: 800;
+        font-size: 4.2vh;
+        letter-spacing: -0.02em;
+      }
+      .wordmark span {
+        color: var(--fer-yellow);
+      }
+      .frame__label {
+        font-size: 2vh;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .frame__bottom {
+        border-top: 1px solid var(--line);
+        padding-top: 2.4vh;
+        font-size: 2vh;
+        color: var(--muted);
+        letter-spacing: 0.04em;
+      }
+
+      .screen {
+        transition:
+          opacity 0.7s ease,
+          transform 0.7s ease;
+      }
+      .screen.hidden {
         opacity: 0;
+        transform: translateY(2vh);
         pointer-events: none;
       }
+      .stage {
+        position: relative;
+      }
+      .stage > .screen {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        align-items: center;
+      }
 
+      /* --- Idle: QR --- */
+      .idle {
+        grid-template-columns: 1.2fr 1fr;
+        gap: 6vw;
+      }
+      .idle__eyebrow {
+        font-size: 2.2vh;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--fer-yellow);
+        margin-bottom: 3vh;
+      }
       .idle__title {
-        font-size: 5vh;
-        font-weight: 700;
+        font-size: 9vh;
+        line-height: 1;
+        font-weight: 800;
+        letter-spacing: -0.03em;
       }
-      .idle__qr {
-        width: 45vh;
-        height: 45vh;
-        background: #fff;
-        padding: 2vh;
-        border-radius: 2vh;
-      }
-      .idle__hint {
-        font-size: 3vh;
+      .idle__steps {
+        margin-top: 5vh;
+        display: grid;
+        gap: 1.6vh;
+        font-size: 2.8vh;
         color: var(--muted);
+        counter-reset: s;
+        list-style: none;
+        padding: 0;
+      }
+      .idle__steps li {
+        counter-increment: s;
+        display: flex;
+        gap: 1.4vw;
+        align-items: baseline;
+      }
+      .idle__steps li::before {
+        content: "0" counter(s);
+        font-weight: 700;
+        color: var(--ink);
+        font-variant-numeric: tabular-nums;
+      }
+      .qr {
+        justify-self: end;
+        position: relative;
+        width: 52vh;
+        aspect-ratio: 1;
+        background: #fff;
+        padding: 3.2vh;
+      }
+      .qr::before {
+        content: "";
+        position: absolute;
+        left: -1.6vh;
+        top: -1.6vh;
+        width: 9vh;
+        height: 9vh;
+        border-left: 0.8vh solid var(--fer-yellow);
+        border-top: 0.8vh solid var(--fer-yellow);
+      }
+      .qr img {
+        width: 100%;
+        height: 100%;
+        display: block;
       }
 
+      /* --- Student --- */
+      .student {
+        grid-template-columns: auto 1fr;
+        gap: 5vw;
+      }
       .student__photo {
-        height: 52vh;
+        height: 62vh;
         aspect-ratio: 3 / 4;
         object-fit: cover;
-        border-radius: 2vh;
-        border: 0.6vh solid var(--accent);
+        display: block;
+        background: var(--fer-blue);
+      }
+      .student__info {
+        display: grid;
+        gap: 4vh;
+        align-content: center;
       }
       .student__name {
-        font-size: 7vh;
+        font-size: 10vh;
+        line-height: 0.95;
         font-weight: 800;
-        text-align: center;
+        letter-spacing: -0.03em;
       }
-      .student__naslov {
-        font-size: 3.6vh;
-        font-style: italic;
-        text-align: center;
-        max-width: 80vw;
+      .student__bar {
+        width: 10vh;
+        height: 0.8vh;
+        background: var(--fer-yellow);
       }
-      .student__mentor {
-        font-size: 3vh;
+      .field__label {
+        font-size: 1.9vh;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
         color: var(--muted);
-        text-align: center;
+        margin-bottom: 1vh;
+      }
+      .field__value {
+        font-size: 3.6vh;
+        line-height: 1.25;
+        font-weight: 500;
+        max-width: 48vw;
+      }
+      .progress {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -2.4vh;
+        height: 0.4vh;
+        background: var(--line);
+      }
+      .progress__fill {
+        height: 100%;
+        width: 100%;
+        background: var(--fer-yellow);
+        transform-origin: left;
+      }
+      .progress__fill.run {
+        animation: drain var(--display-s) linear forwards;
+      }
+      @keyframes drain {
+        from {
+          transform: scaleX(1);
+        }
+        to {
+          transform: scaleX(0);
+        }
       }
     </style>
   </head>
   <body>
-    <section id="idle" class="screen">
-      <h1 class="idle__title">Promocija prvostupnika FER-a</h1>
-      <img id="qr" class="idle__qr" src="/api/qr.svg" alt="QR kod" />
-      <p class="idle__hint">Skeniraj QR, upiši JMBAG i pojavi se na zidu!</p>
-    </section>
+    <div class="frame">
+      <header class="frame__top">
+        <div class="wordmark">FER<span>.</span></div>
+        <div class="frame__label">Promocija prvostupnika</div>
+      </header>
 
-    <section id="student" class="screen hidden">
-      <img id="photo" class="student__photo" alt="" />
-      <h2 id="name" class="student__name" aria-live="polite">&nbsp;</h2>
-      <p id="naslov" class="student__naslov"></p>
-      <p id="mentor" class="student__mentor"></p>
-    </section>
+      <main class="stage">
+        <section id="idle" class="screen idle">
+          <div>
+            <p class="idle__eyebrow">Sveučilište u Zagrebu</p>
+            <h1 class="idle__title">Pojavi se<br />na zidu</h1>
+            <ol class="idle__steps">
+              <li>Skeniraj QR kod</li>
+              <li>Upiši svoj JMBAG</li>
+              <li>Pogledaj prema zidu</li>
+            </ol>
+          </div>
+          <div class="qr"><img id="qr" src="/api/qr.svg" alt="QR kod" /></div>
+        </section>
+
+        <section id="student" class="screen student hidden">
+          <img id="photo" class="student__photo" alt="" />
+          <div class="student__info">
+            <h2 id="name" class="student__name" aria-live="polite">&nbsp;</h2>
+            <div class="student__bar"></div>
+            <div id="naslovWrap">
+              <p class="field__label">Završni rad</p>
+              <p id="naslov" class="field__value"></p>
+            </div>
+            <div id="mentorWrap">
+              <p class="field__label">Mentor</p>
+              <p id="mentor" class="field__value"></p>
+            </div>
+          </div>
+          <div class="progress">
+            <div id="progress" class="progress__fill"></div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="frame__bottom">
+        Fakultet elektrotehnike i računarstva
+      </footer>
+    </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -108,11 +283,17 @@
       function showStudent(s) {
         const img = new Image();
         img.onload = img.onerror = () => {
-          // pričekaj sliku da nema "praznog" frejma
+          // pričekaj sliku da nema praznog frejma
           $("photo").src = img.src;
           $("name").textContent = `${s.ime} ${s.prezime}`;
-          $("naslov").textContent = s.naslovRada ? `„${s.naslovRada}”` : "";
-          $("mentor").textContent = s.mentor ? `Mentor: ${s.mentor}` : "";
+          $("naslov").textContent = s.naslovRada || "";
+          $("mentor").textContent = s.mentor || "";
+          $("naslovWrap").hidden = !s.naslovRada;
+          $("mentorWrap").hidden = !s.mentor;
+          const bar = $("progress"); // restart odbrojavanja
+          bar.classList.remove("run");
+          void bar.offsetWidth;
+          bar.classList.add("run");
           $("idle").classList.add("hidden");
           $("student").classList.remove("hidden");
         };
