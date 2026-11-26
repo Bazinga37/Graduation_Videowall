@@ -291,6 +291,7 @@
           $("naslovWrap").hidden = !s.naslovRada;
           $("mentorWrap").hidden = !s.mentor;
           const bar = $("progress"); // restart odbrojavanja
+          bar.style.animationDuration = `${s.durationMs}ms`;
           bar.classList.remove("run");
           void bar.offsetWidth;
           bar.classList.add("run");
